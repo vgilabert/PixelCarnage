@@ -1,10 +1,12 @@
+using Shared;
 using StatSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Weapons;
 
 namespace Player
 {
-    public class Player : MonoBehaviour, IDamageable
+    public class Player : Damageable
     {
         [SerializeField] private StatsData statsData;
         [SerializeField] private PlayerController2D playerController2D;
@@ -12,24 +14,24 @@ namespace Player
         [SerializeField] private GameObject hitEffect;
         [SerializeField] private float iFramesDuration = 0.3f;
         
+        [SerializeField] private InfoBar healthBar;
+        
         public StatsData Stats => statsData;
 
-        private int _currentHealth;
         private float _iFramesTimer;
 
         // Components
         private PlayerInput _playerInput;
         private SpriteRenderer _spriteRenderer;
         private HitEffectController _hitEffectController;
-        
-        // IDamageable implementation
-        public float CurrentHealth => _currentHealth;
+        private Weapon _weapon;
 
         private void Awake()
         {
             _playerInput = GetComponent<PlayerInput>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _hitEffectController = GetComponent<HitEffectController>();
+            _weapon = GetComponent<Weapon>();
         }
 
         private void OnEnable()
@@ -39,8 +41,15 @@ namespace Player
 
         private void Start()
         {
-            _currentHealth = Stats[StatType.MaxHealth].Value;
+            CurrentHealth = Stats[StatType.MaxHealth].Value;
+            if (healthBar != null)
+            {
+                healthBar.MinValue = 0;
+                healthBar.MaxValue = Stats[StatType.MaxHealth].Value;
+                healthBar.Value = CurrentHealth;
+            }
             playerController2D.SetMaxSpeed(Stats[StatType.MoveSpeed].Value);
+            _weapon.SetUserStats(statsData);
         }
 
         private void Update()
@@ -51,7 +60,7 @@ namespace Player
             }
         }
         
-        public void TakeHit(int damage, HitData hitData = default)
+        public override void TakeHit(int damage, HitData hitData = default)
         {
             if (_iFramesTimer < iFramesDuration) return;
             _iFramesTimer = 0;
@@ -69,25 +78,32 @@ namespace Player
             }
         }
 
-        public void TakeDamage(int damage)
+        protected override void TakeDamage(int damage)
         {
             AudioManager.Instance.PlaySound(SoundType.PlayerHit);
-            Debug.Log($"Player took {damage} damage");
-            Debug.Log(_currentHealth);
-            _currentHealth -= damage;
-            if (_currentHealth <= 0)
+            CurrentHealth -= damage;
+            if (CurrentHealth <= 0)
             {
                 Die();
             }
         }
         
-        private void Die()
+        protected override void OnHealthChanged()
+        {
+            if (healthBar != null)
+            {
+                healthBar.Value = CurrentHealth;
+            }
+        }
+        
+        protected override void Die()
         {
             AudioManager.Instance.PlaySound(SoundType.PlayerDeath);
+            _weapon.Deactivate();
+            Instantiate(deathEffect, transform.position, Quaternion.identity);
             _playerInput.enabled = false;
             _spriteRenderer.enabled = false;
             enabled = false;
-            Instantiate(deathEffect, transform.position, Quaternion.identity);
         }
         
         private void OnStatChanged(StatType statType, int value)

@@ -31,7 +31,7 @@ namespace StatSystem
                 else
                 {
                     Debug.LogWarning($"StatType {statType} not found in StatsData");
-                    return null;
+                    return new CharacterStat(0, statType);
                 }
             }
         }

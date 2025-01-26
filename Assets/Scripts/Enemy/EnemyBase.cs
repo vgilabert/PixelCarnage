@@ -1,52 +1,51 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Shared;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Enemy
 {
-    public class EnemyBase : MonoBehaviour, IDamageable
+    [RequireComponent(typeof(HitEffectController))]
+    public abstract class EnemyBase : Damageable
     {
-        [SerializeField] EnemyStats stats;
+        [SerializeField] private EnemyStats stats;
         [SerializeField] private GameObject deathEffect;
         [SerializeField] private GameObject hitEffect;
         
-        [SerializeField] private Color hitFlashColor = Color.white;
+        public EnemyStats Stats => stats;
         
-        public float CurrentHealth => _currentHealth;
-    
-        private int _currentHealth;
-        private Vector3 _playerPosition;
+        protected Vector3 PlayerPosition;
+        protected bool CanAttack;
+        
         private Player.Player _playerReference;
         
         private EnemyMovementBase _movementComponent;
-        private SpriteRenderer _spriteRenderer;
         private HitEffectController _hitEffectController;
+        
+        private float _attackTimer;
 
 
         private void Awake()
         {
             _movementComponent = GetComponent<EnemyMovementBase>();
-            _spriteRenderer = GetComponent<SpriteRenderer>();
             _hitEffectController = GetComponent<HitEffectController>();
         }
 
         private void Start()
         {
             _playerReference = SceneManager.Instance.PlayerReference;
-            _currentHealth = stats.MaxHealth;
+            CurrentHealth = stats.MaxHealth;
             _movementComponent.SetSpeed(stats.MoveSpeed);
+            TargetFinder.AddTarget(this);
         }
     
-        private void Update()
+        protected virtual void Update()
         {
-            _playerPosition = SceneManager.Instance.PlayerPosition;
-            PerformAttack();
+            PlayerPosition = SceneManager.Instance.PlayerPosition;
+            UpdateAttackTimer();
             CheckBodyDamage();
         }
     
-        public void TakeHit(int damage, HitData hitData = default)
+        public override void TakeHit(int damage, HitData hitData = default)
         {
             // Process damage
             // TODO: Implement takeDamageCondition
@@ -55,7 +54,7 @@ namespace Enemy
             // Push enemy
             if (hitData.Force > 0)
             {
-                Vector3 playerDirection = _playerPosition - transform.position;
+                Vector3 playerDirection = PlayerPosition - transform.position;
                 _movementComponent.Push(playerDirection.normalized, hitData.Force);
             }
         
@@ -73,36 +72,56 @@ namespace Enemy
             }
         }
 
-        public void TakeDamage(int damage)
+        protected override void TakeDamage(int damage)
         {
             AudioManager.Instance.PlaySound(SoundType.EnemyHit);
-            _currentHealth -= damage;
-            if (_currentHealth <= 0)
+            CurrentHealth -= damage;
+            if (CurrentHealth <= 0)
             {
                 Die();
             }
         }
     
-        protected virtual void PerformAttack()
+        private void UpdateAttackTimer()
         {
-            // Attack player
-        
+            if (!CanAttack)
+            {
+                _attackTimer += Time.deltaTime;
+                if (_attackTimer >= 1/stats.AttackSpeed)
+                {
+                    CanAttack = true;
+                    _attackTimer = 0;
+                }
+            } 
+            else
+            {
+                PerformAttack();
+            }
         }
+        
+        private void PerformAttack()
+        {
+            PerformSpecificAttack();
+            CanAttack = false;
+        }
+        
+        protected abstract void PerformSpecificAttack();
     
         protected virtual void CheckBodyDamage()
         {
             // Check if player is in range
-            Vector2 distance = transform.position - _playerPosition;
-            if (Vector3.Distance(transform.position, _playerPosition) <= 1f)
+            Vector2 distance = transform.position - PlayerPosition;
+            if (Vector3.Distance(transform.position, PlayerPosition) <= 0.8f)
             {
-                _playerReference.TakeHit(stats.Damage, new HitData(distance.normalized, 5f));
+                _playerReference.TakeHit(stats.Damage, new HitData(distance.normalized, 0f));
             }
         }
     
-        protected void Die()
+        protected override void Die()
         {
             AudioManager.Instance.PlaySpatialSound(SoundType.EnemyDeath, transform.position);
             Instantiate(deathEffect, transform.position, Quaternion.identity);
+            TargetFinder.RemoveTarget(this);
             Destroy(gameObject);
         }
     }

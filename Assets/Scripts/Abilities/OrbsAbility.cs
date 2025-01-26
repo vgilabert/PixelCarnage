@@ -1,5 +1,4 @@
 using Extensions;
-using StatSystem;
 using UnityEngine;
 
 namespace Abilities
@@ -9,16 +8,15 @@ namespace Abilities
         [SerializeField] private GameObject orbPrefab;
         [SerializeField] private float orbDistance;
         [SerializeField] private float rotationSpeed;
-        private int _orbCount = 8;
-        
-        private void Start()
+        [SerializeField] private int baseOrbCount = 2;
+        private int _currentOrbCount = 2;
+
+        private void OnEnable()
         {
-            Player.Player player = SceneManager.Instance.PlayerReference;
-            for (int i = 0; i < _orbCount; i++)
+            for (int i = 0; i < baseOrbCount; i++)
             {
-                Vector2 orbPosition = MathHelper.PointOnCircle(i, _orbCount, orbDistance);
+                Vector2 orbPosition = (Vector2)transform.position + MathHelper.PointOnCircle(i, baseOrbCount, orbDistance);
                 Orb orb = Instantiate(orbPrefab, orbPosition, Quaternion.identity, transform).GetComponent<Orb>();
-                Debug.Log("damage: " + player.Stats[StatType.Attack].Value);
                 orb.Initialize(rotationSpeed, orbDistance, rotationSpeed);
             }
         }

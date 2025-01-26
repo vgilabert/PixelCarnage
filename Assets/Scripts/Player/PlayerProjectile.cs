@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Enemy;
+using Shared;
 using StatSystem;
 using UnityEngine;
 
@@ -48,9 +49,6 @@ namespace Player
         {
             if (other.TryGetComponent(out EnemyBase enemy))
             {
-                // get tangent vector
-                Debug.DrawRay(transform.position, Direction, Color.red, 1f);
-                Debug.Log(SceneManager.Instance.PlayerReference.Stats[StatType.Attack].Value);
                 enemy.TakeHit(SceneManager.Instance.PlayerReference.Stats[StatType.Attack].Value, new HitData(Direction, Force));
                 _enemiesHit.Add(enemy);
             }
