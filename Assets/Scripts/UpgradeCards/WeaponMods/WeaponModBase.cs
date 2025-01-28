@@ -33,6 +33,7 @@ namespace UpgradeCards.WeaponMods
 
         public abstract void ApplyMod(PlayerBullet bullet);
         public virtual void OnHit(Damageable target, PlayerBullet bullet) { }
+        public virtual void OnInitialize(PlayerBullet bullet) { }
         
         public virtual WeaponModBase Clone()
         {

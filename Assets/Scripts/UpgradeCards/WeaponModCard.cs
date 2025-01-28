@@ -18,10 +18,15 @@ namespace UpgradeSystem
             UpgradeName = sourceWeaponModCard.name;
             WeaponModType = sourceWeaponModCard.weaponModType;
             Description = sourceWeaponModCard.description;
+            
+            // Set card visuals
             if (UpgradeName.Length > 0)
                 titleText.text = UpgradeName;
             if (sourceWeaponModCard.icon != null)
                 imageComponent.sprite = sourceWeaponModCard.icon;
+            if (Description.Length > 0)
+                descriptionText.text = Description;
+            
             _incompatibleMods = sourceWeaponModCard.incompatibleMods;
             IsValid = true;
         }

@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using Projectiles;
 using UpgradeCards.WeaponMods;
-using WeaponMods;
 
 namespace Weapons
 {
     public class Shooter : Weapon
     {
+        private int _spreadAngle;
+        
         protected override void SetUpProjectile(Projectile projectile)
         {
             base.SetUpProjectile(projectile);
@@ -14,7 +15,6 @@ namespace Weapons
             
             if (playerBullet != null)
             {
-                    // Pass independent mod instances to the bullet
                     List<WeaponModBase> bulletMods = new();
                     foreach (var mod in Mods)
                     {

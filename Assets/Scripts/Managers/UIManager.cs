@@ -22,12 +22,12 @@ namespace Managers
 
         public void ShowGameOverScreen()
         {
-            
+            gameOverScreen.SetActive(true);
         }
         
         public void HideGameOverScreen()
         {
-            
+            gameOverScreen.SetActive(false);
         }
 
         public void ShowUpgradeScreen()

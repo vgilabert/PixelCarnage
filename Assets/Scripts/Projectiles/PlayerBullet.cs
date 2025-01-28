@@ -10,6 +10,12 @@ using Random = UnityEngine.Random;
 
 namespace Projectiles
 {
+    public enum ShootType
+    {
+        SingleShot,
+        MultiShot
+    }
+    
     public class PlayerBullet : Projectile
     {
         private Damageable _target;
