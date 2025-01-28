@@ -237,7 +237,8 @@ public class InfoBar : MonoBehaviour
 
         if (UseDisplayText && displayText != null)
         {
-            displayText.text = $"{Value}";
+            //displayText.text = $"{Value}";
+            displayText.text = $"{Value}/{maxValue}";
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Enemy;
 using Shared;
@@ -9,7 +8,6 @@ namespace Player
 {
     public class PlayerProjectile : MonoBehaviour
     {
-        [SerializeField] private float collisionRadius = 0.5f;
         protected float Speed;
         protected float Force;
         protected float LifeTime;
@@ -57,12 +55,6 @@ namespace Player
         protected virtual void Die()
         {
             Destroy(gameObject);
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, collisionRadius);
         }
     }
 }

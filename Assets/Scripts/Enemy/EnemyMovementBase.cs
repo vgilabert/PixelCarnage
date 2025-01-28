@@ -11,6 +11,10 @@ namespace Enemy
         protected float PushDuration;
         private float _pushTimer;
         
+        protected virtual void Start()
+        {
+        }
+        
         protected virtual void Update()
         {
             if (!IsPushed)

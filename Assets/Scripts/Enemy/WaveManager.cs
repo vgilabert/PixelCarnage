@@ -91,7 +91,7 @@ public class WaveManager : MonoBehaviour
         if (searchCountdown <= 0)
         {
             searchCountdown = 1f;
-            if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+            if (TargetFinder.GetTargetCount() == 0)
             {
                 return false;
             }
@@ -112,7 +112,7 @@ public class WaveManager : MonoBehaviour
             }
             else
             {
-                SpawnEnemyInstant(wave.enemy);
+                SpawnEnemyInstant(wave.Enemy);
             }
             yield return new WaitForSeconds(1f / wave.rate);
         }
@@ -125,7 +125,7 @@ public class WaveManager : MonoBehaviour
         Vector3 spawnPosition = new Vector3(Random.Range(-spawnArea.x, spawnArea.x)/2, Random.Range(-spawnArea.y, spawnArea.y)/2, 0);
         GameObject spawnWarningObject = Instantiate(spawnWarningPrefab, spawnPosition, Quaternion.identity);
         yield return new WaitForSeconds(spawnWarningTime);
-        Instantiate(waves[_waveIndex].enemy, spawnPosition, Quaternion.identity);
+        Instantiate(waves[_waveIndex].Enemy, spawnPosition, Quaternion.identity);
         Destroy(spawnWarningObject);
     }
     
@@ -147,7 +147,9 @@ public class WaveManager : MonoBehaviour
 [Serializable]
 public class Wave
 {
-    public GameObject enemy;
+    public GameObject[] enemies;
     public int count;
     public float rate;
+    
+    public GameObject Enemy => enemies[Random.Range(0, enemies.Length)];
 }

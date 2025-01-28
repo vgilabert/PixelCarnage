@@ -16,8 +16,6 @@ namespace Projectiles
         public override void SetUserStats(StatsData stats)
         {
             Damage = stats[StatType.Attack].Value;
-            Speed = 5f;
-            LifeTime = 2f;
             Force = 0;
         }
 
@@ -43,7 +41,7 @@ namespace Projectiles
             }
         }
 
-        protected override void ProcessHit(Damageable target)
+        public override void ProcessHit(Damageable target)
         {
             target.TakeHit(Damage, new HitData(_direction, Force));
         }

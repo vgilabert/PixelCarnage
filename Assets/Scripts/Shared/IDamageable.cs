@@ -16,8 +16,8 @@ namespace Shared
             }
         }
 
-        public abstract void TakeHit(int damage, HitData hitData = default);
-        protected abstract void TakeDamage(int damage);
+        public abstract void TakeHit(float damage, HitData hitData = default);
+        protected abstract void TakeDamage(float damage);
         
         protected virtual void OnHealthChanged() { }
     

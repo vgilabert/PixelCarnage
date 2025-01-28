@@ -9,35 +9,40 @@ namespace Projectiles
 {
     public abstract class Projectile : MonoBehaviour
     {
-        protected readonly HashSet<Damageable> TargetsHit = new ();
+        // Projectile stats
+        [SerializeField] private float speed = 10f;
+        protected float Speed => speed;
         
-        protected int Damage;
-        protected float Speed;
-        protected float LifeTime;
+        [SerializeField] private float lifeTime = 2f;
+        protected float LifeTime => lifeTime;
+        
+        // Stats from user
+        protected float Damage;
         protected float Force;
+        
+        private readonly HashSet<Damageable> _targetsHit = new ();
+        public HashSet<Damageable> TargetsHit => _targetsHit;
+        
         private Vector3 _lastPosition;
+        private float _lifeTimer;
 
         protected abstract void Initialize();
         
         public virtual void SetUserStats(StatsData stats)
         {
             Damage = stats[StatType.Attack].Value;
-            Speed = 20f;
-            LifeTime = 2f;
-            Force = 0;
+            Force = 1;
         }
         
         public virtual void SetUserStats(EnemyStats stats)
         {
             Damage = stats.Damage;
-            Speed = 20f;
-            LifeTime = 2f;
             Force = 0;
         }
 
         protected abstract void Move();
 
-        private void Start()
+        protected virtual void Start()
         {
             Initialize();
         }
@@ -51,13 +56,10 @@ namespace Projectiles
         
         private void CheckLifeTime()
         {
-            if (LifeTime > 0)
+            _lifeTimer += Time.deltaTime;
+            if (_lifeTimer >= LifeTime)
             {
-                LifeTime -= Time.deltaTime;
-                if (LifeTime <= 0)
-                {
-                    Destroy(gameObject);
-                }
+                Destroy(gameObject);
             }
         }
 
@@ -66,6 +68,8 @@ namespace Projectiles
             
         }
 
-        protected abstract void ProcessHit(Damageable target);
+        public abstract void ProcessHit(Damageable target);
+        
+        public void Die() => Destroy(gameObject);
     }
 }

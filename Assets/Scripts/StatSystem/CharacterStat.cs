@@ -5,7 +5,6 @@ namespace StatSystem
 {
     public enum StatType
     {
-        None,
         Attack,
         AttackSpeed,
         CritChance,
@@ -17,12 +16,12 @@ namespace StatSystem
     
     public class CharacterStat
     {
-        private readonly int _baseValue;
+        private readonly float _baseValue;
         private StatType _statType;
         
-        public static Action<StatType, int> OnStatChanged;
+        public static Action<StatType, float> OnStatChanged;
 
-        public int Value
+        public float Value
         {
             get
             {
@@ -30,18 +29,18 @@ namespace StatSystem
                 {
                     _isDirty = false;
                     _value = CalculateFinalValue();
-                    return CalculateFinalValue();
+                    return _value;
                 }
                 return _value;
             }
         }
 
         private bool _isDirty = true;
-        private int _value;
+        private float _value;
 
         private readonly List<StatModifier> _statModifiers;
 
-        public CharacterStat(int baseValue, StatType statType)
+        public CharacterStat(float baseValue, StatType statType)
         {
             _baseValue = baseValue;
             _statType = statType;
@@ -72,9 +71,9 @@ namespace StatSystem
             OnStatChanged?.Invoke(_statType, Value);
         }
 
-        private int CalculateFinalValue()
+        private float CalculateFinalValue()
         {
-            int finalValue = _baseValue;
+            float finalValue = _baseValue;
             for (int i = 0; i < _statModifiers.Count; i++)
             {
                 StatModifier modifier = _statModifiers[i];
@@ -85,7 +84,7 @@ namespace StatSystem
                 }
                 else if (modifier.Type == StatModType.Percent)
                 {
-                    finalValue *= 1 + modifier.Value;
+                    finalValue *= 1 + modifier.Value/100f;
                 }
             }
 

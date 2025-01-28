@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ee8358c22ad45fc893c73aa517429e0, type: 3}
+  m_Name: CardsData
+  m_EditorClassIdentifier: 
+  statCards:
+  - name: Strength
+    icon: {fileID: 21300000, guid: b560a588580bba843be787a73deeb12c, type: 3}
+    statType: 0
+    statModType: 1
+    baseValue: 10
+  - name: Dexterity
+    icon: {fileID: 21300000, guid: b560a588580bba843be787a73deeb12c, type: 3}
+    statType: 1
+    statModType: 1
+    baseValue: 4
+  - name: Agility
+    icon: {fileID: 21300000, guid: b560a588580bba843be787a73deeb12c, type: 3}
+    statType: 6
+    statModType: 1
+    baseValue: 8
+  - name: Sturdiness
+    icon: {fileID: 21300000, guid: b560a588580bba843be787a73deeb12c, type: 3}
+    statType: 4
+    statModType: 1
+    baseValue: 10
+  - name: Precision
+    icon: {fileID: 21300000, guid: b560a588580bba843be787a73deeb12c, type: 3}
+    statType: 2
+    statModType: 0
+    baseValue: 3
+  - name: Ferocity
+    icon: {fileID: 21300000, guid: b560a588580bba843be787a73deeb12c, type: 3}
+    statType: 3
+    statModType: 0
+    baseValue: 15
+  abilityCards:
+  - name: Piercing
+    icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    weaponModType: 1
+    description: Piercing level +1
+  - name: Ricochet
+    icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    weaponModType: 0
+    description: Ricochet level + 1

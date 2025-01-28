@@ -36,6 +36,11 @@ public class TargetFinder : MonoBehaviour
         _targetPositions.TryRemove(target, out _);
     }
     
+    public static int GetTargetCount()
+    {
+        return _targetPositions.Count;
+    }
+    
     public static Damageable FindClosestTarget(Vector2 finderPosition, ref Vector3 targetPosition, HashSet<Damageable> excludedTargets = null, float radius = 50f)
     {
         Damageable closestTarget = null;

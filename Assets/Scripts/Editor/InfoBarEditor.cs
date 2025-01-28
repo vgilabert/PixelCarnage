@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Editor
 {
-    [CustomEditor(typeof(InfoBar))]
+    [CustomEditor(typeof(InfoBar)), CanEditMultipleObjects]
     public class InfoBarEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()

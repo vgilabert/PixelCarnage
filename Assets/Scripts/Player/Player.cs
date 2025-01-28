@@ -1,5 +1,6 @@
 using Shared;
 using StatSystem;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Weapons;
@@ -15,6 +16,11 @@ namespace Player
         [SerializeField] private float iFramesDuration = 0.3f;
         
         [SerializeField] private InfoBar healthBar;
+        [SerializeField] private InfoBar experienceBar;
+        [SerializeField] private TextMeshProUGUI levelText;
+        
+        [Header("Debug")]
+        [SerializeField] private bool invincible = false;
         
         public StatsData Stats => statsData;
 
@@ -37,6 +43,15 @@ namespace Player
         private void OnEnable()
         {
             CharacterStat.OnStatChanged += OnStatChanged;
+            PlayerLeveling.OnExperienceChanged += OnExperienceChanged;
+            PlayerLeveling.OnLevelUp += OnLevelUp;
+        }
+
+        private void OnDisable()
+        {
+            CharacterStat.OnStatChanged -= OnStatChanged;
+            PlayerLeveling.OnExperienceChanged -= OnExperienceChanged;
+            PlayerLeveling.OnLevelUp -= OnLevelUp;
         }
 
         private void Start()
@@ -45,7 +60,7 @@ namespace Player
             if (healthBar != null)
             {
                 healthBar.MinValue = 0;
-                healthBar.MaxValue = Stats[StatType.MaxHealth].Value;
+                healthBar.MaxValue = (int)Stats[StatType.MaxHealth].Value;
                 healthBar.Value = CurrentHealth;
             }
             playerController2D.SetMaxSpeed(Stats[StatType.MoveSpeed].Value);
@@ -60,8 +75,9 @@ namespace Player
             }
         }
         
-        public override void TakeHit(int damage, HitData hitData = default)
+        public override void TakeHit(float damage, HitData hitData = default)
         {
+            if (invincible) return;
             if (_iFramesTimer < iFramesDuration) return;
             _iFramesTimer = 0;
             
@@ -78,7 +94,7 @@ namespace Player
             }
         }
 
-        protected override void TakeDamage(int damage)
+        protected override void TakeDamage(float damage)
         {
             AudioManager.Instance.PlaySound(SoundType.PlayerHit);
             CurrentHealth -= damage;
@@ -104,20 +120,37 @@ namespace Player
             _playerInput.enabled = false;
             _spriteRenderer.enabled = false;
             enabled = false;
+            GameManager.Instance.GameOver();
         }
         
-        private void OnStatChanged(StatType statType, int value)
+        private void OnStatChanged(StatType statType, float value)
         {
             switch (statType)
             {
                 case StatType.MaxHealth:
-                    // TODO: Do something
+                    var previousMaxHealth = healthBar.MaxValue;
+                    healthBar.MaxValue = (int)value;
+                    CurrentHealth = Mathf.Clamp(CurrentHealth + (int)value - previousMaxHealth, 0, (int)value);
                     break;
                 case StatType.MoveSpeed:
                     Debug.Log(value);
-                    playerController2D.SetMaxSpeed(value);
+                    playerController2D?.SetMaxSpeed(value);
                     break;
             }
+        }
+        
+        private void OnExperienceChanged(int experienceAmount, int newExperienceCap)
+        {
+            if (experienceBar == null) return;
+            experienceBar.MaxValue = newExperienceCap;
+            experienceBar.Value =experienceAmount;
+        }
+        
+        private void OnLevelUp(int level)
+        {
+            if (levelText == null) return;
+            levelText.text = level.ToString();
+            
         }
     }
 }

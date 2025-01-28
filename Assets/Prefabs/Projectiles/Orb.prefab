@@ -29,9 +29,9 @@ Transform:
   m_GameObject: {fileID: 5550073929957106270}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.8127866, y: 4.3553514, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6094339, g: 0.88955075, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -102,7 +102,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd654a40c4de4c3583327047938aa47f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionRadius: 0.25
 --- !u!96 &7590123287964786596
 TrailRenderer:
   serializedVersion: 3
@@ -152,19 +151,19 @@ TrailRenderer:
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 0.4
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: -2.0663261
-        outSlope: -2.0663261
+        inSlope: -0.6220447
+        outSlope: -0.6220447
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.50796455
+        outWeight: 0.84267837
       - serializedVersion: 3
         time: 0.35626262
         value: 0.3280529
@@ -204,7 +203,7 @@ TrailRenderer:
       ctime5: 0
       ctime6: 0
       ctime7: 0
-      atime0: 0
+      atime0: 231
       atime1: 45875
       atime2: 65535
       atime3: 0

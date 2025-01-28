@@ -10,6 +10,7 @@ namespace Enemy
         [SerializeField] private EnemyStats stats;
         [SerializeField] private GameObject deathEffect;
         [SerializeField] private GameObject hitEffect;
+        [SerializeField] private int xpValue;
         
         public EnemyStats Stats => stats;
         
@@ -45,7 +46,7 @@ namespace Enemy
             CheckBodyDamage();
         }
     
-        public override void TakeHit(int damage, HitData hitData = default)
+        public override void TakeHit(float damage, HitData hitData = default)
         {
             // Process damage
             // TODO: Implement takeDamageCondition
@@ -72,7 +73,7 @@ namespace Enemy
             }
         }
 
-        protected override void TakeDamage(int damage)
+        protected override void TakeDamage(float damage)
         {
             AudioManager.Instance.PlaySound(SoundType.EnemyHit);
             CurrentHealth -= damage;
@@ -119,6 +120,7 @@ namespace Enemy
     
         protected override void Die()
         {
+            XpParticlesController.Instance.SpawnParticles(xpValue, transform.position);
             AudioManager.Instance.PlaySpatialSound(SoundType.EnemyDeath, transform.position);
             Instantiate(deathEffect, transform.position, Quaternion.identity);
             TargetFinder.RemoveTarget(this);

@@ -1,30 +1,46 @@
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using Enemy;
 using Shared;
 using StatSystem;
 using UnityEngine;
+using WeaponMods;
+using Random = UnityEngine.Random;
 
 namespace Projectiles
 {
     public class PlayerBullet : Projectile
     {
         private Damageable _target;
+        public Damageable Target { get; set; }
+        
         private Vector3 _currentTargetPosition;
+        public Vector3 CurrentTargetPosition { get; set; }
         private Vector2 _direction;
         
-        // Upgrades
-        private int _ricochetLevel = 2;
-        private int _ricochetCount;
-        private int _piercingLevel = 1;
-        private int _piercingCount; 
-        
+        // Stats
+        private float criticalChance;
+        private float criticalDamage;
+        private bool _hasMods;
+
+        private List<WeaponModBase> _mods = new(); // List of mods specific to this bullet
         
         protected override void Initialize()
         {
             FindNewTarget();
         }
         
-        private void FindNewTarget()
+        public void ApplyMods(List<WeaponModBase> mods)
+        {
+            foreach (var mod in mods)
+            {
+                var modInstance = mod.Clone(); // Ensure independent instance
+                modInstance.ApplyMod(this);
+                _mods.Add(modInstance);
+            }
+        }
+        
+        public void FindNewTarget()
         {
             _target = TargetFinder.FindClosestTarget(transform.position, ref _currentTargetPosition,
                 TargetsHit);
@@ -42,8 +58,8 @@ namespace Projectiles
         public override void SetUserStats(StatsData stats)
         {
             Damage = stats[StatType.Attack].Value;
-            Speed = 20f;
-            LifeTime = 2f;
+            criticalChance = stats[StatType.CritChance].Value;
+            criticalDamage = stats[StatType.CritDamage].Value;
             Force = 0;
         }
 
@@ -70,24 +86,32 @@ namespace Projectiles
             }
         }
 
-        protected override void ProcessHit(Damageable target)
+        public override void ProcessHit(Damageable target)
         {
-            target.TakeHit(Damage, new HitData(_direction, Force));
-            bool shouldRicochet = (_ricochetLevel > 0 && _ricochetCount < _ricochetLevel);
-            bool shouldPierce = (_piercingLevel > 0 && _piercingCount < _piercingLevel);
-            if (shouldRicochet)
+            float finalDamage = ProcessCriticalChance();
+            target.TakeHit(finalDamage, new HitData(_direction, Force));
+            
+            foreach (var mod in _mods)
             {
-                _ricochetCount++;
-                FindNewTarget();
+                mod.OnHit(target, this);
             }
-            else if (shouldPierce)
+
+            // If no mods stopped the bullet, destroy it
+            if (_mods.Count == 0 || !_mods.Exists(mod => mod.IsBulletActive))
             {
-                _piercingCount++;
+                Die();
             }
-            else
+        }
+        
+        private float ProcessCriticalChance()
+        {
+            if (Random.value <= criticalChance/100)
             {
-                Destroy(gameObject);
+                Debug.Log("Critical Hit!");
+                AudioManager.Instance.PlaySound(SoundType.CriticalHit);
+                return Damage *= criticalDamage/100;
             }
+            return Damage;
         }
     }
 }

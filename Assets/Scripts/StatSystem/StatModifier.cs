@@ -1,20 +1,19 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace StatSystem
 {
     public enum StatModType
     {
         Flat,
-        Percent
+        Percent,
     }
     
     [Serializable]
     public class StatModifier
     {
-        [SerializeField] private int value;
-        public int Value => value;
+        [SerializeField] private float value;
+        public float Value => value;
         
         [SerializeField] private StatModType type;
         public StatModType Type => type;
@@ -28,7 +27,7 @@ namespace StatSystem
         [SerializeField] private StatType statType;
         public StatType StatType => statType;
         
-        public StatModifier(int value, StatModType type, int order, object source, StatType statType)
+        public StatModifier(float value, StatModType type, int order, object source, StatType statType)
         {
             this.value = value;
             this.type = type;
@@ -37,10 +36,10 @@ namespace StatSystem
             this.statType = statType;
         }
         
-        public StatModifier(int value, StatModType type, StatType statType) : this(value, type, (int) type, null, statType) { }
+        public StatModifier(float value, StatModType type, StatType statType) : this(value, type, (int) type, null, statType) { }
         
-        public StatModifier(int value, StatModType type, int order, StatType statType) : this(value, type, order, null, statType) { }
+        public StatModifier(float value, StatModType type, int order, StatType statType) : this(value, type, order, null, statType) { }
         
-        public StatModifier(int value, StatModType type, object source, StatType statType) : this(value, type, (int) type, source, statType) { }
+        public StatModifier(float value, StatModType type, object source, StatType statType) : this(value, type, (int) type, source, statType) { }
     }
 }

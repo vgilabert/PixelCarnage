@@ -81,12 +81,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    maxHealth: 5
+    maxHealth: 3
     damage: 10
     attackSpeed: 0
     moveSpeed: 2
   deathEffect: {fileID: 2911293628252688119, guid: 1e5a565fe129b44488a59f794bb90315, type: 3}
   hitEffect: {fileID: 3373668548853584540, guid: c0740e9ca37b67048868eadca13e0200, type: 3}
+  xpValue: 2
 --- !u!114 &981411559464642604
 MonoBehaviour:
   m_ObjectHideFlags: 0

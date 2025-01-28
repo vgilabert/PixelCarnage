@@ -9,6 +9,8 @@ public enum SoundType
     EnemyHit,
     PlayerDeath,
     PlayerHit,
+    ParticlePickup,
+    CriticalHit,
 }
 
 [ExecuteInEditMode]
@@ -32,7 +34,13 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     public void PlaySound(SoundType soundType)
     {
+        if (audioSource == null)
+        {
+            Debug.LogWarning("AudioSource is null");
+            return;
+        }
         SoundData data = soundData[(int) soundType];
+        if (data?.sounds == null || data.sounds.Length == 0) return;
         AudioClip randomClip = data.sounds[Random.Range(0, data.sounds.Length)];
         audioSource.clip = randomClip;
         if (data.randomizedPitch)

@@ -5,6 +5,7 @@ namespace Enemy
 {
     public class EnemySniper : EnemyBase
     {
+        [SerializeField] private float bulletSpeed;
         [SerializeField] private Projectile projectilePrefab;
 
         protected override void Update()
