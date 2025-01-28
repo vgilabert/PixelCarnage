@@ -4,6 +4,7 @@ using Projectiles;
 using Shared;
 using StatSystem;
 using UnityEngine;
+using UpgradeCards.WeaponMods;
 using WeaponMods;
 
 namespace Weapons

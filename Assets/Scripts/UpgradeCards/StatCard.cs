@@ -28,7 +28,7 @@ namespace UpgradeSystem
             _modType = sourceStatCard.statModType;
             _baseValue = sourceStatCard.baseValue;
             Description = _statType + " + " + Value;
-            if (_modType == StatModType.Percent)
+            if (_modType == StatModType.PercentAdd)
                 Description += "%";
             
             // Set card visuals

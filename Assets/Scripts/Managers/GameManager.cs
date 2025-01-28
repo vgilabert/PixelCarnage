@@ -35,7 +35,7 @@ public class GameManager : MonoSingleton<GameManager>
                     UIManager.Instance.HideGameOverScreen();
                     if (_previousGameState == GameState.Upgrading) // If we were upgrading, we need to increase the timescale back to 1
                     {
-                        StartCoroutine(IncreaseTimeScale(0.9f));
+                        StartCoroutine(IncreaseTimeScale(0.6f));
                     }
                     else // Set timescale to 1 instantly in other cases
                     {
@@ -51,12 +51,12 @@ public class GameManager : MonoSingleton<GameManager>
                     break;
                 
                 case GameState.GameOver:
-                    UIManager.Instance.ShowGameOverScreen();
+                    DoAfter(2f, () => UIManager.Instance.ShowGameOverScreen());
                     break;
                 
                 case GameState.Upgrading:
                     UpgradePhaseManager.Instance.CheckNewDraw();
-                    DoAfter(0.9f, () => UIManager.Instance.ShowUpgradeScreen());
+                    DoAfter(0.7f, () => UIManager.Instance.ShowUpgradeScreen());
                     break;
             }
         }

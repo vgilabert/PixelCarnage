@@ -5,8 +5,9 @@ namespace StatSystem
 {
     public enum StatModType
     {
-        Flat,
-        Percent,
+        Flat = 100,
+        PercentAdd = 200,
+        PercentMult = 300
     }
     
     [Serializable]

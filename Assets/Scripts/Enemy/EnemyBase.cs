@@ -122,6 +122,7 @@ namespace Enemy
         {
             XpParticlesController.Instance.SpawnParticles(xpValue, transform.position);
             AudioManager.Instance.PlaySpatialSound(SoundType.EnemyDeath, transform.position);
+            CinemachineShake.Instance.Shake(3f, 0.8f, 0.2f);
             Instantiate(deathEffect, transform.position, Quaternion.identity);
             TargetFinder.RemoveTarget(this);
             Destroy(gameObject);

@@ -4,6 +4,7 @@ using Enemy;
 using Shared;
 using StatSystem;
 using UnityEngine;
+using UpgradeCards.WeaponMods;
 using WeaponMods;
 using Random = UnityEngine.Random;
 

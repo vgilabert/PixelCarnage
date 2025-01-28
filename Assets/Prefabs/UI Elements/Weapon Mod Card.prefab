@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 1078597804121612146}
   - component: {fileID: 8173850440340450591}
   m_Layer: 5
-  m_Name: Ability Card
+  m_Name: Weapon Mod Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

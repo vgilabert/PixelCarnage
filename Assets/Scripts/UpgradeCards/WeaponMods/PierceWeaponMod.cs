@@ -1,10 +1,10 @@
 using Projectiles;
 using Shared;
-using UnityEngine;
+using UpgradeCards.WeaponMods;
 
 namespace WeaponMods
 {
-    public class RicochetWeaponMod : WeaponModBase
+    public class PierceWeaponMod : WeaponModBase
     {
         private int MaxRicochetCount => Level;
         private int ricochetCount;
@@ -19,7 +19,6 @@ namespace WeaponMods
             if (ricochetCount < MaxRicochetCount)
             {
                 ricochetCount++;
-                bullet.FindNewTarget();
             }
             else
             {

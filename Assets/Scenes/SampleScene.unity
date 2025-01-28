@@ -1232,6 +1232,8 @@ GameObject:
   - component: {fileID: 681745867}
   - component: {fileID: 681745866}
   - component: {fileID: 681745868}
+  - component: {fileID: 681745870}
+  - component: {fileID: 681745869}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -1328,6 +1330,36 @@ MonoBehaviour:
     Time: 0.5
     Smoothing: 0
     IgnoreY: 0
+--- !u!114 &681745869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681745864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 841c763bbd79ef74b9642c8851b22203, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cinemachineCamera: {fileID: 681745866}
+--- !u!114 &681745870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681745864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  PivotOffset: {x: 0, y: 0, z: 0}
+  AmplitudeGain: 1
+  FrequencyGain: 1
+  m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &715150600
 GameObject:
   m_ObjectHideFlags: 0
@@ -3063,6 +3095,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: XPParticules
       objectReference: {fileID: 0}
+    - target: {fileID: 3003546145293650078, guid: 0599feb416315e1409365fa491793e9b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fd589b8402356af47b50400191f8c3f7, type: 2}
     - target: {fileID: 4522346248203947898, guid: 0599feb416315e1409365fa491793e9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3849,7 +3885,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9696,6 +9732,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 88277619791255689, guid: a506a6d7916d0374a8faa041cdf1f179, type: 3}
+      propertyPath: levelRanges.Array.data[1].endLevel
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 88277619791255689, guid: a506a6d7916d0374a8faa041cdf1f179, type: 3}
+      propertyPath: levelRanges.Array.data[2].endLevel
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 88277619791255689, guid: a506a6d7916d0374a8faa041cdf1f179, type: 3}
+      propertyPath: levelRanges.Array.data[2].startLevel
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 88277619791255689, guid: a506a6d7916d0374a8faa041cdf1f179, type: 3}
       propertyPath: levelRanges.Array.data[0].experienceCapIncrease
       value: 5
       objectReference: {fileID: 0}
@@ -9757,7 +9805,7 @@ PrefabInstance:
       objectReference: {fileID: 1242833790}
     - target: {fileID: 6891568095966548368, guid: a506a6d7916d0374a8faa041cdf1f179, type: 3}
       propertyPath: invincible
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6891568095966548368, guid: a506a6d7916d0374a8faa041cdf1f179, type: 3}
       propertyPath: experienceBar

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Projectiles;
+using UpgradeCards.WeaponMods;
 using WeaponMods;
 
 namespace Weapons

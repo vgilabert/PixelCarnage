@@ -25,10 +25,11 @@ namespace StatSystem
         {
             get
             {
-                if (_isDirty)
+                if (_isDirty || _lastBaseValue != _baseValue)
                 {
                     _isDirty = false;
                     _value = CalculateFinalValue();
+                    _lastBaseValue = _baseValue;
                     return _value;
                 }
                 return _value;
@@ -37,6 +38,7 @@ namespace StatSystem
 
         private bool _isDirty = true;
         private float _value;
+        private float _lastBaseValue = float.MinValue;
 
         private readonly List<StatModifier> _statModifiers;
 
@@ -74,6 +76,8 @@ namespace StatSystem
         private float CalculateFinalValue()
         {
             float finalValue = _baseValue;
+            float sumPercentAdd = 0;
+            
             for (int i = 0; i < _statModifiers.Count; i++)
             {
                 StatModifier modifier = _statModifiers[i];
@@ -82,7 +86,17 @@ namespace StatSystem
                 {
                     finalValue += modifier.Value;
                 }
-                else if (modifier.Type == StatModType.Percent)
+                else if (modifier.Type == StatModType.PercentAdd)
+                {
+                    sumPercentAdd += modifier.Value/100f;
+                    
+                    if (i + 1 >= _statModifiers.Count || _statModifiers[i + 1].Type != StatModType.PercentAdd)
+                    {
+                        finalValue *= 1 + sumPercentAdd;
+                        sumPercentAdd = 0;
+                    }
+                }
+                else if (modifier.Type == StatModType.PercentMult)
                 {
                     finalValue *= 1 + modifier.Value/100f;
                 }

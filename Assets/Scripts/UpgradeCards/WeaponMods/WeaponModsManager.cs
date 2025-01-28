@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Extensions;
 using UnityEngine;
+using UpgradeCards.WeaponMods;
 using Weapons;
 
 namespace WeaponMods

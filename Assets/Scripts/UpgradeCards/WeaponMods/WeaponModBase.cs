@@ -1,8 +1,9 @@
 using Projectiles;
 using Shared;
 using UpgradeSystem;
+using WeaponMods;
 
-namespace WeaponMods
+namespace UpgradeCards.WeaponMods
 {
     public abstract class WeaponModBase
     {

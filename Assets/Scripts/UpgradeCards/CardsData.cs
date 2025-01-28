@@ -40,6 +40,7 @@ namespace UpgradeSystem
     public class WeaponModCardData : BaseCardData
     {
         public WeaponModType weaponModType;
+        public WeaponModType[] incompatibleMods;
         public string description;
 
     }

@@ -4,7 +4,9 @@ namespace UpgradeSystem
 {
     public class WeaponModCard : BaseCard
     {
-        public WeaponModType AbilityType { get; private set; }
+        public WeaponModType WeaponModType { get; private set; }
+
+        private WeaponModType[] _incompatibleMods;
 
         public override void Initialize(BaseCardData cardData)
         {
@@ -14,19 +16,24 @@ namespace UpgradeSystem
                 return;
             }
             UpgradeName = sourceWeaponModCard.name;
-            AbilityType = sourceWeaponModCard.weaponModType;
+            WeaponModType = sourceWeaponModCard.weaponModType;
             Description = sourceWeaponModCard.description;
             if (UpgradeName.Length > 0)
                 titleText.text = UpgradeName;
             if (sourceWeaponModCard.icon != null)
                 imageComponent.sprite = sourceWeaponModCard.icon;
+            _incompatibleMods = sourceWeaponModCard.incompatibleMods;
             IsValid = true;
         }
 
         protected override void UpgradePlayer()
         {
-            //AbilitiesManager.Instance.ApplyAbility(AbilityType);
-            WeaponModsManager.Instance.ApplyMod(AbilityType);
+            // Remove incompatible mods from the library
+            foreach (WeaponModType modType in _incompatibleMods)
+            {
+                CardsLibrary.Instance.RemoveCard(modType);
+            }
+            WeaponModsManager.Instance.ApplyMod(WeaponModType);
         }
     }
 }
