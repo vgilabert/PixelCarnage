@@ -1,7 +1,7 @@
 using Projectiles;
 using Shared;
 using UpgradeSystem;
-using WeaponMods;
+using Weapons;
 
 namespace UpgradeCards.WeaponMods
 {
@@ -31,9 +31,19 @@ namespace UpgradeCards.WeaponMods
             }
         }
 
-        public abstract void ApplyMod(PlayerBullet bullet);
-        public virtual void OnHit(Damageable target, PlayerBullet bullet) { }
-        public virtual void OnInitialize(PlayerBullet bullet) { }
+        public virtual void ApplyMod(Weapon weapon)
+        {
+            
+        }
+
+        public virtual void ApplyMod(Projectile projectile)
+        {
+            
+        }
+        
+        public virtual void OnHit(Damageable target, Projectile projectile) { }
+        
+        public virtual void OnInitialize(Projectile projectile) { }
         
         public virtual WeaponModBase Clone()
         {

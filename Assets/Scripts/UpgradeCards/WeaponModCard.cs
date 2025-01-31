@@ -1,3 +1,4 @@
+using UpgradeCards.WeaponMods;
 using WeaponMods;
 
 namespace UpgradeSystem

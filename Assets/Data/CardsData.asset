@@ -54,3 +54,8 @@ MonoBehaviour:
     weaponModType: 0
     incompatibleMods: 01000000
     description: Ricochet level + 1
+  - name: Multishot
+    icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    weaponModType: 3
+    incompatibleMods: 01000000
+    description: 'Add projectiles '

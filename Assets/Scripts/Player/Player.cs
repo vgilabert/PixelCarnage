@@ -65,6 +65,7 @@ namespace Player
             }
             playerController2D.SetMaxSpeed(Stats[StatType.MoveSpeed].Value);
             _weapon.SetUserStats(statsData);
+            _weapon.Activate();
         }
 
         private void Update()

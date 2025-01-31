@@ -1,26 +1,24 @@
 using Projectiles;
 using Shared;
-using UnityEngine;
-using UpgradeCards.WeaponMods;
 
-namespace WeaponMods
+namespace UpgradeCards.WeaponMods
 {
     public class RicochetWeaponMod : WeaponModBase
     {
         private int MaxRicochetCount => Level;
-        private int ricochetCount;
+        private int _ricochetCount;
 
-        public override void ApplyMod(PlayerBullet bullet)
+        public override void ApplyMod(Projectile projectile)
         {
             IsBulletActive = true; // Ensure the mod keeps the bullet alive
         }
 
-        public override void OnHit(Damageable target, PlayerBullet bullet)
+        public override void OnHit(Damageable target, Projectile projectile)
         {
-            if (ricochetCount < MaxRicochetCount)
+            if (_ricochetCount < MaxRicochetCount)
             {
-                ricochetCount++;
-                bullet.FindNewTarget();
+                _ricochetCount++;
+                projectile.FindNewTarget();
             }
             else
             {

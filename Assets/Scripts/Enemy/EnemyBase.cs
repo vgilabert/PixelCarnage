@@ -23,8 +23,7 @@ namespace Enemy
         private HitEffectController _hitEffectController;
         
         private float _attackTimer;
-
-
+        
         private void Awake()
         {
             _movementComponent = GetComponent<EnemyMovementBase>();
@@ -143,5 +142,13 @@ namespace Enemy
     
         [SerializeField] private float moveSpeed;
         public float MoveSpeed => moveSpeed;
+        
+        public void IncreaseStats(float multiplier)
+        {
+            maxHealth = (int) (maxHealth * multiplier);
+            damage = (int) (damage * multiplier);
+            attackSpeed *= multiplier;
+            moveSpeed *= multiplier;
+        }
     }
 }

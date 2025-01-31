@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using StatSystem;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UpgradeCards.WeaponMods;
 using WeaponMods;
 
 namespace UpgradeSystem

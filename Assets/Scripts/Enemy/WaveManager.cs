@@ -1,155 +1,119 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.Serialization;
 
-enum WaveState
+namespace Enemy
 {
-    Spawning,
-    Waiting,
-    Counting
-}
-
-enum SpawnMode
-{
-    Wave,
-    Constant
-}
-
-public class WaveManager : MonoBehaviour
-{
-    [Header("Wave Settings")]
-    [SerializeField] private Wave[] waves;
-    [SerializeField] private float timeBetweenWaves = 5f;
-    [SerializeField] private float searchCountdown = 1f;
-    [SerializeField] private WaveState state = WaveState.Counting;
-    [SerializeField] private SpawnMode spawnMode = SpawnMode.Wave;
-    
-    [Header("Spawn Warning")]
-    [SerializeField] private bool showSpawnWarning = true;
-    [SerializeField] private float spawnWarningTime = 1.5f;
-    [SerializeField] private GameObject spawnWarningPrefab;
-    
-    [Header("Spawn Area")]
-    [SerializeField] private Vector2 spawnArea = new Vector2(20, 20);
-    
-    [Header("Debug")]
-    [SerializeField] private bool debug = false;
-
-    private float _waveCountdown;
-    private int _waveIndex;
-    
-    private void Start()
+    [System.Serializable]
+    public class WaveAction
     {
-        _waveCountdown = timeBetweenWaves;
+        public EnemyBase prefab;
+        public int spawnCount;
     }
 
-    private void Update()
+    [System.Serializable]
+    public class Wave
     {
-        if (state == WaveState.Waiting)
-        {
-            if (!EnemyIsAlive())
-            {
-                WaveCompleted();
-            }
-            else
-            {
-                return;
-            }
-        }
-
-        if (_waveCountdown <= 0)
-        {
-            if (state != WaveState.Spawning)
-            {
-                StartCoroutine(SpawnWave(waves[_waveIndex]));
-            }
-        }
-        else
-        {
-            _waveCountdown -= Time.deltaTime;
-        }
-    }
-
-    private void WaveCompleted()
-    {
-        state = WaveState.Counting;
-        _waveCountdown = timeBetweenWaves;
-
-        if (_waveIndex + 1 > waves.Length - 1)
-        {
-            _waveIndex = 0;
-        }
-        else
-        {
-            _waveIndex++;
-        }
-    }
-
-    private bool EnemyIsAlive()
-    {
-        searchCountdown -= Time.deltaTime;
-        if (searchCountdown <= 0)
-        {
-            searchCountdown = 1f;
-            if (TargetFinder.GetTargetCount() == 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private System.Collections.IEnumerator SpawnWave(Wave wave)
-    {
-        state = WaveState.Spawning;
-
-        for (int i = 0; i < wave.count; i++)
-        {
-            if (showSpawnWarning)
-            {
-                StartCoroutine(SpawnEnemy());
-            }
-            else
-            {
-                SpawnEnemyInstant(wave.Enemy);
-            }
-            yield return new WaitForSeconds(1f / wave.rate);
-        }
-
-        state = WaveState.Waiting;
-    }
-
-    private System.Collections.IEnumerator SpawnEnemy()
-    {
-        Vector3 spawnPosition = new Vector3(Random.Range(-spawnArea.x, spawnArea.x)/2, Random.Range(-spawnArea.y, spawnArea.y)/2, 0);
-        GameObject spawnWarningObject = Instantiate(spawnWarningPrefab, spawnPosition, Quaternion.identity);
-        yield return new WaitForSeconds(spawnWarningTime);
-        Instantiate(waves[_waveIndex].Enemy, spawnPosition, Quaternion.identity);
-        Destroy(spawnWarningObject);
+        public string name;
+        public float duration = 10;
+        public List<WaveAction> actions;
     }
     
-    private void SpawnEnemyInstant(GameObject enemy)
+    public class WaveManager : MonoBehaviour
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-spawnArea.x, spawnArea.x)/2, Random.Range(-spawnArea.y, spawnArea.y)/2, 0);
-        Instantiate(enemy, spawnPosition, Quaternion.identity);
-    }
-    
-    private void OnDrawGizmosSelected()
-    {
-        if (!debug) return;
+        [Header("Waves Settings")]
+        [SerializeField] private float timeDifficultyFactor = 0.1f;
+        [SerializeField] private float enemyDifficultyFactor = 0.1f;
+        [SerializeField] private Vector2 spawnArea = new(20, 20);
+        [SerializeField] private float enemySpawnDelay = 1.0f;
+        [SerializeField] private List<Wave> waves;
         
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position, spawnArea);
-    }
-}
-
-[Serializable]
-public class Wave
-{
-    public GameObject[] enemies;
-    public int count;
-    public float rate;
+        [Header("Spawn Warning")]
+        [SerializeField] private bool showSpawnWarning = true;
+        [SerializeField] private float spawnWarningTime = 1.5f;
+        [SerializeField] private GameObject spawnWarningPrefab;
     
-    public GameObject Enemy => enemies[Random.Range(0, enemies.Length)];
+        [Header("Debug")]
+        [SerializeField] private bool debug = false;
+        
+        public Wave CurrentWave => _currentWave;
+        
+        private float _currentDelayMultiplier = 1.0f;
+        private float _currentDifficultyMultiplier = 1.0f;
+        private Wave _currentWave;
+        private int _currentWaveIndex = 0;
+        
+        private float _currentEnemySpawnDelay;
+
+        private void Start()
+        {
+            _currentEnemySpawnDelay = enemySpawnDelay;
+            StartCoroutine(SpawnLoop());
+        }
+        
+        IEnumerator SpawnLoop()
+        {
+            yield return new WaitForSeconds(5f);
+            while(true)
+            {
+                foreach(Wave currentWave in waves)
+                {
+                    _currentWave = currentWave;
+                    _currentWaveIndex++;
+                    foreach(WaveAction action in currentWave.actions)
+                    {
+                        if (action.prefab != null && action.spawnCount > 0)
+                        {
+                            for(int i = 0; i < action.spawnCount; i++)
+                            {
+                                Vector3 spawnPosition = new Vector3(Random.Range(-spawnArea.x, spawnArea.x), Random.Range(-spawnArea.y, spawnArea.y), 0);
+                                GameObject enemyPrefab = action.prefab.gameObject;
+                                if (showSpawnWarning)
+                                {
+                                    StartCoroutine(SpawnEnemyAfterWarning(spawnPosition, enemyPrefab));
+                                } 
+                                else
+                                {
+                                    SpawnEnemy(enemyPrefab, spawnPosition);
+                                }
+                                yield return new WaitForSeconds(_currentEnemySpawnDelay);
+                            }
+                        }
+                    }
+                    yield return new WaitForSeconds(_currentWave.duration);
+                }
+                _currentDelayMultiplier *= timeDifficultyFactor;
+                _currentEnemySpawnDelay *= timeDifficultyFactor;
+                _currentDifficultyMultiplier *= 1 + enemyDifficultyFactor;
+                yield return null;
+            }
+            yield return null;
+        }
+        
+        private IEnumerator SpawnEnemyAfterWarning(Vector3 spawnPosition, GameObject enemyPrefab)
+        {
+            GameObject spawnWarningObject = Instantiate(spawnWarningPrefab, spawnPosition, Quaternion.identity);
+            yield return new WaitForSeconds(spawnWarningTime);
+            Destroy(spawnWarningObject);
+            SpawnEnemy(enemyPrefab, spawnPosition);
+        }
+
+        private void SpawnEnemy(GameObject enemyPrefab, Vector3 spawnPosition)
+        {
+            EnemyBase enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity).GetComponent<EnemyBase>();
+            enemy.Stats.IncreaseStats(_currentDifficultyMultiplier * GameManager.Instance.GameDifficultyFactor);
+        }
+
+        #region Debug
+
+        private void OnDrawGizmos()
+        {
+            if (!debug) return;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(Vector3.zero, new Vector3(spawnArea.x * 2, spawnArea.y * 2, 0));
+        }
+
+        #endregion
+    }
 }

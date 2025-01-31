@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Extensions;
 using Managers;
 using Player;
@@ -14,8 +15,26 @@ public enum GameState
     Upgrading
 }
 
+internal enum GameDifficulty
+{
+    Easy = 1,
+    Normal = 2,
+    Hard = 3
+}
+
 public class GameManager : MonoSingleton<GameManager>
 {
+    [Header("Difficulty Settings")]
+    [SerializeField] private GameDifficulty gameDifficulty;
+    // readonly and constant Dictionary to store the difficulty factors
+    private readonly Dictionary<GameDifficulty, float> _difficultyFactors = new()
+    {
+        {GameDifficulty.Easy, 0.5f},
+        {GameDifficulty.Normal, 1f},
+        {GameDifficulty.Hard, 1.5f}
+    };
+    public float GameDifficultyFactor => _difficultyFactors[gameDifficulty];
+    
     private static GameState _currentGameState = GameState.Playing;
     private static GameState _previousGameState;
     

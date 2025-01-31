@@ -1,20 +1,19 @@
 using Projectiles;
 using Shared;
-using UpgradeCards.WeaponMods;
 
-namespace WeaponMods
+namespace UpgradeCards.WeaponMods
 {
     public class PierceWeaponMod : WeaponModBase
     {
         private int MaxRicochetCount => Level;
         private int ricochetCount;
 
-        public override void ApplyMod(PlayerBullet bullet)
+        public override void ApplyMod(Projectile projectile)
         {
             IsBulletActive = true; // Ensure the mod keeps the bullet alive
         }
 
-        public override void OnHit(Damageable target, PlayerBullet bullet)
+        public override void OnHit(Damageable target, Projectile projectile)
         {
             if (ricochetCount < MaxRicochetCount)
             {

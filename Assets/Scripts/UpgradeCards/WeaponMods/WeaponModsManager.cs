@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Extensions;
 using UnityEngine;
-using UpgradeCards.WeaponMods;
 using Weapons;
 
-namespace WeaponMods
+namespace UpgradeCards.WeaponMods
 {
     public enum WeaponModType
     {
@@ -38,6 +37,10 @@ namespace WeaponMods
                     break;
                 case WeaponModType.Piercing:
                     _modTemplates[weaponModType] = new PierceWeaponMod();
+                    equippedWeapon.AddMod(_modTemplates[weaponModType]);
+                    break;
+                case WeaponModType.MultiShot:
+                    _modTemplates[weaponModType] = new MultiShotWeaponMod();
                     equippedWeapon.AddMod(_modTemplates[weaponModType]);
                     break;
             }

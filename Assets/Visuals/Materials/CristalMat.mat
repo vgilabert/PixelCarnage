@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CustomSpriteMat
+  m_Name: CristalMat
   m_Shader: {fileID: -6465566751694194690, guid: 4329d0b6d88c00746915b37c40422d98, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -56,6 +56,6 @@ Material:
     m_Floats:
     - _EmissionIntensity: 1
     m_Colors:
-    - _BaseColor: {r: 4, g: 4, b: 4, a: 1}
+    - _BaseColor: {r: 4, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

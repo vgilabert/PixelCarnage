@@ -1,13 +1,19 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player
 {
     public class PlayerLeveling : MonoBehaviour
     {
-        public int level = 1;  
+        [Serializable]
+        public class LevelRange
+        {
+            public int startLevel;
+            public int endLevel;
+            public int experienceCapIncrease;
+        }
         
+        [SerializeField] private int level = 1;  
         public int Level
         {
             get => level;
@@ -19,37 +25,30 @@ namespace Player
         }
         
         private int _experience;
-        
         public int Experience
         {
             get => _experience;
             set
             {
                 _experience = value;
-                OnExperienceChanged(_experience, experienceCap);
+                OnExperienceChanged(_experience, _experienceCap);
             }
         }
         
-        [SerializeField] private int experienceCap;
+        private int _experienceCap;
         public int ExperienceCap
         {
-            get => experienceCap;
+            get => _experienceCap;
             set
             {
-                experienceCap = value;
-                OnExperienceChanged(_experience, experienceCap);
+                _experienceCap = value;
+                OnExperienceChanged(_experience, _experienceCap);
             }
         }
         
-        public List<LevelRange> levelRanges;
-
-        [Serializable]
-        public class LevelRange
-        {
-            public int startLevel;
-            public int endLevel;
-            public int experienceCapIncrease;
-        }
+        //public List<LevelRange> levelRanges;
+        public int baseCap = 10;
+        public float capExponent = 1.5f;
         
         // Events
         public static Action<int, int> OnExperienceChanged = delegate { };
@@ -59,7 +58,8 @@ namespace Player
         {
             Level = level;
             Experience = _experience;
-            ExperienceCap = levelRanges[0].experienceCapIncrease;
+            ExperienceCap = baseCap;
+            //ExperienceCap = levelRanges[0].experienceCapIncrease;
         }
 
         public void IncreaseExperience(int amount)
@@ -75,7 +75,10 @@ namespace Player
                 Level++;
                 Experience -= ExperienceCap;
                 
-                int experienceCapIncrease = 0;
+                // Increase experience cap
+                ExperienceCap = (int)CalculateExperienceCap(Level);
+                
+                /*int experienceCapIncrease = 0;
                 foreach (LevelRange range in levelRanges)
                 {
                     if (level >= range.startLevel && level <= range.endLevel)
@@ -84,8 +87,14 @@ namespace Player
                         break;
                     }
                 }
-                ExperienceCap += experienceCapIncrease;
+                ExperienceCap += experienceCapIncrease;*/
             }
+        }
+        
+        // Describes the formula for calculating the experience cap for each level
+        private float CalculateExperienceCap(int level)
+        {
+            return baseCap * Mathf.Pow(level, capExponent);
         }
     }
 }

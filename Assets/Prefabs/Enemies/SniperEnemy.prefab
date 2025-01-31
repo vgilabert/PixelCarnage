@@ -109,7 +109,7 @@ MonoBehaviour:
   deathEffect: {fileID: 2911293628252688119, guid: 1e5a565fe129b44488a59f794bb90315, type: 3}
   hitEffect: {fileID: 3373668548853584540, guid: c0740e9ca37b67048868eadca13e0200, type: 3}
   xpValue: 5
-  bulletSpeed: 0
+  bulletSpeed: 15
   projectilePrefab: {fileID: 5016500243998032525, guid: 39cbec8c6b89e96468ecd2b287814093, type: 3}
 --- !u!114 &-6670619920129568837
 MonoBehaviour:

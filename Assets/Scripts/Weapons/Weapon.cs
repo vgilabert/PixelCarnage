@@ -1,36 +1,41 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Projectiles;
 using Shared;
 using StatSystem;
 using UnityEngine;
 using UpgradeCards.WeaponMods;
-using WeaponMods;
 
 namespace Weapons
 {
     public abstract class Weapon : MonoBehaviour
     {
+        [Header("Weapon Stats")]
         [SerializeField] private int damageMultiplier = 1;
-        [SerializeField] private float baseAttackSpeed = 0.1f;
+        [SerializeField] private float attackSpeedMultiplier = 1f;
+        [SerializeField] private float range = 20f;
+        [SerializeField] private float projectileSpeed = 15f;
         [SerializeField] private Projectile projectilePrefab;
-
-        private StatsData _userStats;
-        protected StatsData UserStats => _userStats;
+        [SerializeField] private bool targetIsPlayer = false;
         
+        [Header("Debug")]
+        [SerializeField] bool debug = false;
+
+        protected StatsData UserStats;
+        protected Damageable Target;
+        protected Vector3 TargetPosition;
+        protected int ProjectileCount = 1;
+
         private readonly List<WeaponModBase> _mods = new();
         public List<WeaponModBase> Mods => _mods;
-        
-        private TargetMarker _targetMarker;
 
-        private void OnEnable()
-        {
-            Activate();
-        }
+        private TargetMarker _targetMarker;
 
         private void OnDisable()
         {
-            StopCoroutine(nameof(AttackLoop));
+            StopCoroutine(nameof(FiringLoop));
         }
 
         protected virtual void Start()
@@ -40,69 +45,94 @@ namespace Weapons
         
         protected virtual void Update()
         {
-            Vector3 targetTransform = Vector3.zero;
-            TargetFinder.FindClosestTarget(transform.position, ref targetTransform);
-            if (_targetMarker != null)
+            UpdateTarget();
+        }
+
+        private void UpdateTarget()
+        {
+            if (targetIsPlayer)
             {
-                if (targetTransform != Vector3.zero)
-                {
-                    _targetMarker.gameObject.SetActive(true);
-                    _targetMarker.transform.position = targetTransform;
-                }
-                else
-                {
-                    _targetMarker.gameObject.SetActive(false);
-                }
+                TargetPosition = SceneManager.Instance.PlayerPosition;
+                return;
+            }
+            Target = TargetFinder.FindClosestTarget(transform.position, ref TargetPosition, null, range);
+            if (Target != null)
+            {
+                if (_targetMarker == null) return;
+                
+                _targetMarker.gameObject.SetActive(true);
+                _targetMarker.transform.position = TargetPosition;
+            }
+            else
+            {
+                if (_targetMarker == null) return;
+                
+                _targetMarker.gameObject.SetActive(false);
             }
         }
 
         public void SetUserStats(StatsData stats)
         {
-            _userStats = stats;
+            UserStats = stats;
         }
         
         public void AddMod(WeaponModBase weaponMod)
         {
             _mods.Add(weaponMod);
+            weaponMod.ApplyMod(this);
         }
 
         public void Activate()
         {
-            StartCoroutine(nameof(AttackLoop));
+            if (projectilePrefab == null)
+            {
+                Debug.LogWarning($"Projectile prefab is not set for {name}. Weapon will not fire.");
+                return; 
+            }
+            StartCoroutine(nameof(FiringLoop));
         }
         
         public void Deactivate()
         {
-            StopCoroutine(nameof(AttackLoop));
+            StopCoroutine(nameof(FiringLoop));
         }
         
-        private IEnumerator AttackLoop()
+        private IEnumerator FiringLoop()
         {
-            if (UserStats == null)
-            {
-                yield return null;
-            }
             while (true)
             {
-                Attack();
-                yield return new WaitForSeconds(1 / (baseAttackSpeed * (UserStats[StatType.AttackSpeed].Value==0?1:UserStats[StatType.AttackSpeed].Value)));
+                if (Target != null)
+                {
+                    Fire();
+                }
+                
+                // Prevents division by zero
+                if (UserStats[StatType.AttackSpeed].Value == 0)
+                    yield return new WaitForSeconds(1 / attackSpeedMultiplier);
+                
+                // Cooldown between shots
+                yield return new WaitForSeconds(1 / (attackSpeedMultiplier * UserStats[StatType.AttackSpeed].Value));
             }
         }
         
-        protected virtual void Attack()
+        private void Fire()
         {
-            if (projectilePrefab == null)
-            {
-                Debug.LogWarning("Projectile prefab is not set");
-                return; 
-            }
-            Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-            SetUpProjectile(projectile);
+            InstantiateProjectiles(projectilePrefab, TargetPosition - transform.position, UserStats, projectileSpeed);
         }
+
+        protected abstract void InstantiateProjectiles(Projectile prefab, Vector2 direction, StatsData stats, float projectileSpeed);
         
-        protected virtual void SetUpProjectile(Projectile projectile)
+        // add projectile functionality
+        public virtual void SetProjectileCount(int count)
         {
-            projectile.SetUserStats(UserStats);
+            ProjectileCount = count;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, range);
+            Debug.DrawLine(transform.position, TargetPosition, Color.red);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Enemy
 {
     public class EnemySniper : EnemyBase
     {
-        [SerializeField] private float bulletSpeed;
+        [SerializeField] private float bulletSpeed = 15f;
         [SerializeField] private Projectile projectilePrefab;
 
         protected override void Update()
@@ -18,7 +18,8 @@ namespace Enemy
         protected override void PerformSpecificAttack()
         {
             EnemyBullet bullet = Instantiate(projectilePrefab, transform.position, Quaternion.identity).GetComponent<EnemyBullet>();
-            bullet.SetUserStats(Stats);
+            bullet.Initialize(Stats, bulletSpeed);
+            bullet.SetDirection(PlayerPosition - transform.position);
         }
     }
 }

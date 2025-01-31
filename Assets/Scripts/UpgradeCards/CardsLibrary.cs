@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Extensions;
 using UnityEngine;
+using UpgradeCards.WeaponMods;
 using WeaponMods;
 
 namespace UpgradeSystem
